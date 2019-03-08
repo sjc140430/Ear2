@@ -2,11 +2,15 @@
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Enumeration;
+import java.util.InvalidPropertiesFormatException;
+import java.util.Properties;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
@@ -19,18 +23,29 @@ public class EarExtractor {
 	private String jspPath;
 	private String regex;
 	private String configLocation;
+	private String extract;
 	
-	public EarExtractor(boolean extract, String regex, String earTarget, String configLocation) {
-		this.earTarget=earTarget;
-		this.regex=regex;
+	public EarExtractor(String configLocation) throws InvalidPropertiesFormatException, FileNotFoundException, IOException {
 		this.configLocation=configLocation;
-		init(extract);
+		Properties prop = new Properties();
+		prop.loadFromXML(new FileInputStream(configLocation));
+		
+		this.earTarget = prop.getProperty("earTarget");
+		this.regex = prop.getProperty("regex");
+		this.earLocation = prop.getProperty("earLocation");
+		this.extract =prop.getProperty("extract");
+		System.out.println(earTarget);
+		System.out.println(regex);
+		System.out.println(earLocation);
+		System.out.println(extract);
+		
+		init();
 	}
 	
-	public void init(boolean extract) {
-		setEarLocation(locateEar()); //load ear location from txt file
+	public void init() {
+		//setEarLocation(locateEar()); //load ear location from txt file
 		createTargetDirectory(); //not sure if neccessary or if extractArchive just takes long time... //Creates target dir b4 extract
-		if(extract) {extractArchive();}		
+		if(extract.equals("true")) {extractArchive();}		
 		webINFpath = findFolder(new File(earTarget), "WEB-INF");
 		jspPath = findFolder(new File(webINFpath), "jsp_servlet");
 		
@@ -41,10 +56,11 @@ public class EarExtractor {
 		countFiles(earTarget, ".*\\.class");
 	}
 	
+	/*
 	public void setEarLocation(String location) {
 		earLocation = location;
 	}
-	
+	*/
 	public String locateEar() {
 		BufferedReader reader;
 		try {
