@@ -2,11 +2,11 @@
 public class EarExtractorTest {
 
 	public static void main(String[] args) {
-
+		boolean extract = false;
 		String regex = "^_{2}.*\\.class$";
 		String target = "C:/Users/ST20018615/Desktop/ship";
 		String configLocation = "C:/Users/ST20018615/eclipse-workspace3/Ear2/src/earLocation";
-		EarExtractor ear = new EarExtractor(false, regex, target, configLocation);
+		EarExtractor ear = new EarExtractor(extract, regex, target, configLocation);
 		
 		/* //init method peforms the same, flag false if you dont want to unzip directory every time
 		ear.locateEar(); //load ear location from txt file

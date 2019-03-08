@@ -29,13 +29,16 @@ public class EarExtractor {
 	
 	public void init(boolean extract) {
 		setEarLocation(locateEar()); //load ear location from txt file
-		createDestination(); //not sure if neccessary or if extractArchive just takes long time... //Creates target dir b4 extract
+		createTargetDirectory(); //not sure if neccessary or if extractArchive just takes long time... //Creates target dir b4 extract
 		if(extract) {extractArchive();}		
 		webINFpath = findFolder(new File(earTarget), "WEB-INF");
 		jspPath = findFolder(new File(webINFpath), "jsp_servlet");
-		countFiles();
+		
 		System.out.println("webINFpath: " + webINFpath);
 		System.out.println("jspPath: " + jspPath);
+		
+		countFiles(jspPath, regex);
+		countFiles(earTarget, ".*\\.class");
 	}
 	
 	public void setEarLocation(String location) {
@@ -59,7 +62,7 @@ public class EarExtractor {
 	/*
 	 * If destination folder doesn't exist make it, extract method was not finding folder. Ear destination needs to be set first.
 	 */
-	public void createDestination() {
+	public void createTargetDirectory() {
 		File f = new File(earTarget);
 		if (!f.exists()){
 			f.mkdir();
@@ -129,6 +132,7 @@ public class EarExtractor {
 	
 	public int findFiles(File source, String regex) {
 		int count = 0;
+		//System.out.println("source inside findFiles call: " + source.getName());
 		File[] files = source.listFiles();
 		for (File file : files) {
 			if (file.isDirectory()) {
@@ -148,9 +152,11 @@ public class EarExtractor {
 		return count;
 	}
 	
-	public int countFiles() {
+	//creates file object out of name passed, and regex passed, Prints to cmd
+	public int countFiles(String source, String regex) {
 		System.out.println("Regex sent to count Files: " + regex);
-		int i =  findFiles(new File(jspPath), regex);
+		System.out.println("Source sent to count Files: " + source);
+		int i =  findFiles(new File(source), regex);
 		System.out.println("Number of Files: " + i);
 		return i;
 	}
