@@ -14,60 +14,57 @@ import java.util.regex.Pattern;
 public class EarExtractor {
 	
 	private String earLocation;
-	private String earDestination;
+	private String earTarget;
 	private String webINFpath;
 	private String jspPath;
+	private String regex;
+	private String configLocation;
 	
-	public EarExtractor(boolean extract) {
+	public EarExtractor(boolean extract, String regex, String earTarget, String configLocation) {
+		this.earTarget=earTarget;
+		this.regex=regex;
+		this.configLocation=configLocation;
 		init(extract);
 	}
 	
 	public void init(boolean extract) {
-		locateEar(); //load ear location from txt file
-		setEarDestination("C:/Users/ST20018615/Desktop/ship"); //to-do: store destination in txt file... convert to xml
-		createDestination();
+		setEarLocation(locateEar()); //load ear location from txt file
+		createDestination(); //not sure if neccessary or if extractArchive just takes long time... //Creates target dir b4 extract
 		if(extract) {extractArchive();}		
-		setWEBINF();
-		setJSP();
+		webINFpath = findFolder(new File(earTarget), "WEB-INF");
+		jspPath = findFolder(new File(webINFpath), "jsp_servlet");
 		countFiles();
+		System.out.println("webINFpath: " + webINFpath);
+		System.out.println("jspPath: " + jspPath);
 	}
 	
-	/*
-	 * If destination folder doesn't exist make it, extract method was not finding folder. Ear destination needs to be set first.
-	 */
-	public void createDestination() {
-		File f = new File(earDestination);
-		if (!f.exists()){
-			f.mkdir();
-		}
-		System.out.println("earDestination: " + earDestination);
-	}
-	public void setEarDestination(String path) {
-		earDestination = path;
-		File f = new File(earDestination);
-		if (!f.exists()){
-			f.mkdir();
-		}
-		System.out.println("earDestination: " + earDestination);
-	}
-
-	public void setWebINFpath(String s) {
-		webINFpath = s;
+	public void setEarLocation(String location) {
+		earLocation = location;
 	}
 	
 	public String locateEar() {
 		BufferedReader reader;
 		try {
 			//add some iteration logic to hold multiple locations in config file.
-			reader = new BufferedReader(new FileReader("C:/Users/ST20018615/eclipse-workspace3/Ear2/src/earLocation"));
+			reader = new BufferedReader(new FileReader(configLocation));
 			String earPath = reader.readLine();
 			System.out.println("Path to Ear: " + earPath);
-			earLocation = earPath;
 		}
 		catch (IOException e ){
 			e.printStackTrace();
 		}
 		return earLocation;		
+	}
+	
+	/*
+	 * If destination folder doesn't exist make it, extract method was not finding folder. Ear destination needs to be set first.
+	 */
+	public void createDestination() {
+		File f = new File(earTarget);
+		if (!f.exists()){
+			f.mkdir();
+		}
+		System.out.println("earTarget: " + earTarget);
 	}
 	
 	public void extractArchive() {
@@ -79,7 +76,7 @@ public class EarExtractor {
 		    JarEntry file = (JarEntry) enumEntries.nextElement();
 		    //System.out.println(file.getName());
 
-		    File f = new File(earDestination + File.separator + file.getName());
+		    File f = new File(earTarget + File.separator + file.getName());
 		    if (file.isDirectory()) { // if its a directory, create it
 		        f.mkdir();
 		        continue;
@@ -151,18 +148,7 @@ public class EarExtractor {
 		return count;
 	}
 	
-	public void setWEBINF() {
-		webINFpath = findFolder(new File(earDestination), "WEB-INF");
-		System.out.println("webINFpath: " + webINFpath);
-	}
-	
-	public void setJSP() {
-		jspPath = findFolder(new File(webINFpath), "jsp_servlet");
-		System.out.println("jspFolder: " + jspPath);
-	}
-	
 	public int countFiles() {
-		String regex = "^_{2}.*\\.class$";
 		System.out.println("Regex sent to count Files: " + regex);
 		int i =  findFiles(new File(jspPath), regex);
 		System.out.println("Number of Files: " + i);
