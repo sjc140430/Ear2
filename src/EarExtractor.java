@@ -15,11 +15,11 @@ public class EarExtractor {
 	
 	private String earLocation;
 	private String earDestination;
-	private String webINFpath = "";
-	private String jspPath = "";
+	private String webINFpath;
+	private String jspPath;
 	
-	public EarExtractor() {
-		earLocation = "";
+	public EarExtractor(boolean extract) {
+		init(extract);
 	}
 	
 	public void init(boolean extract) {
