@@ -34,6 +34,7 @@ public class EarExtractor {
 		this.regex = prop.getProperty("regex");
 		this.earLocation = prop.getProperty("earLocation");
 		this.extract =prop.getProperty("extract");
+		
 		System.out.println("Properties:");
 		System.out.println(earTarget);
 		System.out.println(regex);
