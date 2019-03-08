@@ -34,10 +34,12 @@ public class EarExtractor {
 		this.regex = prop.getProperty("regex");
 		this.earLocation = prop.getProperty("earLocation");
 		this.extract =prop.getProperty("extract");
+		System.out.println("Properties:");
 		System.out.println(earTarget);
 		System.out.println(regex);
 		System.out.println(earLocation);
 		System.out.println(extract);
+		System.out.println();
 		
 		init();
 	}
@@ -51,9 +53,12 @@ public class EarExtractor {
 		
 		System.out.println("webINFpath: " + webINFpath);
 		System.out.println("jspPath: " + jspPath);
+		System.out.println();
 		
 		countFiles(jspPath, regex);
+		System.out.println();
 		countFiles(earTarget, ".*\\.class");
+		System.out.println();
 	}
 	
 	/*
