@@ -42,7 +42,6 @@ public class EarExtractor {
 		System.out.println(extract);
 		System.out.println();
 		
-		init();
 	}
 	
 	public void init() {
@@ -174,7 +173,7 @@ public class EarExtractor {
 		return count;
 	}
 	
-	//creates file object out of name passed, and regex passed, Prints to cmd
+	//creates file object out of name passed, and regex passed, Printer handling to console
 	public int countFiles(String source, String regex) {
 		System.out.println("Regex sent to count Files: " + regex);
 		System.out.println("Source sent to count Files: " + source);
