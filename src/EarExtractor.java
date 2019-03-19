@@ -59,6 +59,8 @@ public class EarExtractor {
 		System.out.println();
 		countFiles(earTarget, ".*\\.class");
 		System.out.println();
+		
+		System.out.println(findFolderBFS(new File(webINFpath), "jsp_servlet"));
 	}
 	
 	/*
@@ -142,6 +144,38 @@ public class EarExtractor {
 					}
 				}
 			}
+
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		//System.out.println("target not found");
+		//System.out.println("found end iter: " + found);
+		return found;
+	}
+	
+	public String findFolderBFS(File source, String targetDir) {
+		String found = null;
+		try {
+			File[] files = source.listFiles();
+			
+			outer:
+				for (File file : files) {
+					if (file.isDirectory()) {
+						//System.out.println(file.getName());
+						if(file.getName().equals(targetDir)) { //folder name matches target
+							//System.out.println("found target: " + file.getName());
+							 found = file.getCanonicalPath();
+							 System.out.println("found at base case: " + found);
+							 break outer;
+
+						}
+						else {
+							System.out.println("Else: " + file.getName());
+							found = (found != null) ? found : findFolderBFS(file, targetDir);
+							//System.out.println(found);
+						}
+					}
+				}
 
 		} catch (IOException e) {
 			e.printStackTrace();
