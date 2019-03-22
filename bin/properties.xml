@@ -1,0 +1,8 @@
+<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
+<properties>
+    <comment>This is a comment</comment>
+    <entry key="extract">false</entry>
+    <entry key="regex">^_{2}.*\.class$</entry>
+    <entry key="earTarget">C:\Users\ST20018615\desktop\ship</entry>
+    <entry key="earLocation">C:\Users\ST20018615\desktop\ship.war</entry>
+</properties>

@@ -24,6 +24,7 @@ public class EarExtractor {
 	private String regex;
 	private String configLocation;
 	private String extract;
+	private int calls = 0;
 	
 	public EarExtractor(String configLocation) throws InvalidPropertiesFormatException, FileNotFoundException, IOException {
 		this.configLocation=configLocation;
@@ -49,7 +50,11 @@ public class EarExtractor {
 		createTargetDirectory(); //not sure if neccessary or if extractArchive just takes long time... //Creates target dir b4 extract
 		if(extract.equals("true")) {extractArchive();}		
 		webINFpath = findFolder(new File(earTarget), "WEB-INF");
+		
+		
+		calls = 0;
 		jspPath = findFolder(new File(webINFpath), "jsp_servlet");
+		System.out.println("method calls: " + calls);
 		
 		System.out.println("webINFpath: " + webINFpath);
 		System.out.println("jspPath: " + jspPath);
@@ -60,7 +65,10 @@ public class EarExtractor {
 		countFiles(earTarget, ".*\\.class");
 		System.out.println();
 		
+		
+		calls = 0;
 		System.out.println(findFolderBFS(new File(webINFpath), "jsp_servlet"));
+		System.out.println("method calls: " + calls);
 	}
 	
 	/*
@@ -137,6 +145,7 @@ public class EarExtractor {
 						//System.out.println("found at base case: " + found);
 					}
 					else {
+						calls++;
 						temp = findFolder(file, targetDir);
 						if(temp != null) {
 							found = temp;
@@ -157,25 +166,20 @@ public class EarExtractor {
 		String found = null;
 		try {
 			File[] files = source.listFiles();
-			
-			outer:
-				for (File file : files) {
-					if (file.isDirectory()) {
-						//System.out.println(file.getName());
-						if(file.getName().equals(targetDir)) { //folder name matches target
-							//System.out.println("found target: " + file.getName());
-							 found = file.getCanonicalPath();
-							 System.out.println("found at base case: " + found);
-							 break outer;
-
-						}
-						else {
-							System.out.println("Else: " + file.getName());
-							found = (found != null) ? found : findFolderBFS(file, targetDir);
-							//System.out.println(found);
-						}
-					}
+			for (File file : files) {
+				if(file.getName().equals(targetDir)) {
+					found = file.getCanonicalPath();
+					System.out.println("found at base case: " + found);
 				}
+			}
+			for (File file : files) {
+				if (file.isDirectory()) {				
+						//System.out.println("Else: " + file.getName());
+						calls++;
+						found = (found != null) ? found : findFolderBFS(file, targetDir);
+						//System.out.println(found);
+				}
+			}
 
 		} catch (IOException e) {
 			e.printStackTrace();
